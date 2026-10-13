@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verify — VerifyAI</title>
+<meta name="description" content="Paste a claim or drop an image. Get a verdict with live web sources.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+
+<div class="topline"><div class="wrap in"><span>VERIFYAI · INDEPENDENT VERIFICATION</span><span id="dateline">—</span></div></div>
+<header class="masthead"><div class="wrap in"><a href="index.html"><div class="brand">Verify<b>AI</b></div></a><div class="tagline">A verdict with the evidence — before you share it.</div></div></header>
+<nav class="main"><div class="wrap in">
+  <a href="index.html">Home</a><a href="verify.html" class="active">Verify</a><a href="how.html">How it works</a><a href="about.html">About</a>
+  <span class="spacer"></span><a href="verify.html" class="go">Check a claim →</a>
+</div></nav>
+
+<section class="vhead"><div class="wrap">
+  <div class="sec-kicker">The verifier</div>
+  <h1>Check a claim or image</h1>
+  <p>Paste a statement you've seen online, or drop in an image. VerifyAI searches the live web and returns a verdict with the sources. Everything is free.</p>
+</div></section>
+
+<div class="vgrid">
+  <div class="vcol">
+    <div class="vlabel">① The claim</div>
+    <textarea id="claim" rows="5" placeholder="e.g. &quot;India's literacy rate crossed 90% in 2024.&quot;"></textarea>
+    <div class="samplebtns" id="samples"></div>
+    <div class="vhint">The more specific the claim, the better the check.</div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-fill" id="verifyBtn">Run verification →</button>
+      <button class="btn btn-line" id="demoBtn">See a sample verdict</button>
+    </div>
+  </div>
+  <div class="vcol">
+    <div class="vlabel">② An image (optional)</div>
+    <div class="dropz" id="dropz"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m3 17 5-4 4 3 3-2 6 5"/></svg><h4>Drop a photo</h4><p>Reads hidden EXIF data on your device</p></div>
+    <input type="file" id="imgfile" accept="image/*" hidden>
+    <img id="imgprev" style="max-width:100%;margin-top:12px;border:1px solid var(--rule);display:none" alt="preview">
+    <div class="exif" id="exif"></div>
+    <div class="vlabel" style="margin-top:16px">Reverse image search</div>
+    <div class="rev"><a id="rvLens" href="https://lens.google.com/" target="_blank" rel="noopener">Google Lens</a><a href="https://tineye.com/" target="_blank" rel="noopener">TinEye</a><a href="https://www.bing.com/visualsearch" target="_blank" rel="noopener">Bing</a></div>
+    <div class="vhint">Open a reverse-image tool and upload the photo to find where it first appeared.</div>
+  </div>
+</div>
+
+<section class="result" id="result" style="display:none"><div class="wrap" id="resultInner"></div></section>
+
+<footer><div class="wrap foot-in"><span>VERIFYAI · Edition 001</span><span><a href="how.html">Method</a> · <a href="about.html">About &amp; limits</a></span><span>Not a substitute for professional fact-checking.</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.js"></script>
+<script>
+(function(){
+  var d=new Date(),days=["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"],mon=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  var dl=document.getElementById('dateline');if(dl)dl.textContent=days[d.getDay()]+", "+d.getDate()+" "+mon[d.getMonth()]+" "+d.getFullYear();
+})();
+var $=function(id){return document.getElementById(id);};
+
+/* sample claims */
+var SAMPLES=["The Great Wall of China is visible from space with the naked eye.","India's population overtook China's in 2023.","Drinking 8 glasses of water a day is backed by strong scientific evidence.","A single viral photo shows this week's flood in Chennai."];
+$("samples").innerHTML=SAMPLES.map(function(s,i){return '<button data-i="'+i+'">'+s.slice(0,34)+(s.length>34?'…':'')+'</button>';}).join("");
+$("samples").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;$("claim").value=SAMPLES[+b.dataset.i];});
+
+/* image EXIF */
+var dz=$("dropz"),fi=$("imgfile");
+dz.onclick=function(){fi.click();};
+fi.onchange=function(e){if(e.target.files[0])handleImg(e.target.files[0]);};
+["dragenter","dragover"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.add("drag");});});
+["dragleave","drop"].forEach(function(ev){dz.addEventListener(ev,function(e){e.preventDefault();dz.classList.remove("drag");});});
+dz.addEventListener("drop",function(e){if(e.dataTransfer.files[0])handleImg(e.dataTransfer.files[0]);});
+function handleImg(file){
+  var prev=$("imgprev");prev.src=URL.createObjectURL(file);prev.style.display="block";
+  $("exif").innerHTML='<div class="r"><span class="k">reading metadata…</span><span></span></div>';
+  if(!window.exifr){$("exif").innerHTML=row("metadata","EXIF reader unavailable");return;}
+  exifr.parse(file,{gps:true}).then(function(x){
+    if(!x){$("exif").innerHTML=row("metadata","none found — may be stripped (common on social media)");return;}
+    var html="";
+    if(x.DateTimeOriginal)html+=row("captured",new Date(x.DateTimeOriginal).toLocaleString());
+    if(x.Make||x.Model)html+=row("camera",((x.Make||"")+" "+(x.Model||"")).trim());
+    if(x.Software)html+=row("software",x.Software);
+    if(x.latitude&&x.longitude)html+=row("gps",x.latitude.toFixed(4)+", "+x.longitude.toFixed(4));
+    if(!html)html=row("metadata","present but no date/camera/location fields");
+    $("exif").innerHTML=html+'<div class="vhint" style="margin-top:8px">Edited or AI-generated images often show editing software, or no camera data at all.</div>';
+  }).catch(function(){$("exif").innerHTML=row("metadata","none found — may be stripped");});
+}
+function row(k,v){return '<div class="r"><span class="k">'+k+'</span><span>'+esc(v)+'</span></div>';}
+function esc(s){return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+
+/* verify */
+$("verifyBtn").onclick=runVerify;
+$("demoBtn").onclick=function(){render(DEMO,true);};
+$("claim").addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))runVerify();});
+
+var TRACE=["connecting to verification service","composing web searches","reading sources","weighing the evidence","writing the verdict"];
+function runVerify(){
+  var claim=$("claim").value.trim();
+  if(!claim){$("claim").focus();$("claim").style.borderColor="var(--red)";return;}
+  $("claim").style.borderColor="";
+  var R=$("result"),RI=$("resultInner");R.style.display="block";
+  RI.innerHTML='<div class="loading"><div class="spin">● VERIFYING</div><div class="trace2" id="trace2">'+TRACE.map(function(t,i){return '<div class="ln" id="tl'+i+'">→ '+t+'</div>';}).join("")+'</div></div>';
+  R.scrollIntoView({behavior:"smooth"});
+  var step=0;var ti=setInterval(function(){var el=document.getElementById("tl"+step);if(el)el.classList.add("on");step++;if(step>=TRACE.length)clearInterval(ti);},700);
+
+  fetch("/api/verify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({claim:claim})})
+    .then(function(res){return res.json().then(function(j){return {ok:res.ok,j:j};});})
+    .then(function(o){ clearInterval(ti);
+      if(!o.ok||o.j.error){ showError(o.j.error||"The verification service returned an error."); return; }
+      render(o.j,false);
+    })
+    .catch(function(){ clearInterval(ti);
+      showError("Couldn't reach the verification service. This runs on the deployed site (Vercel) with a Gemini API key set — it won't run in a local preview. Showing a sample verdict instead.");
+      setTimeout(function(){render(DEMO,true);},1800);
+    });
+}
+function showError(msg){ $("resultInner").innerHTML='<div class="notice">'+esc(msg)+'</div>'; }
+
+function stampClass(v){v=(v||"").toUpperCase();if(v==="TRUE")return"green";if(v==="FALSE")return"false";return"";}
+function render(data,isDemo){
+  var R=$("result"),RI=$("resultInner");R.style.display="block";
+  var v=(data.verdict||"UNVERIFIED").toUpperCase();
+  var conf=(typeof data.confidence==="number")?data.confidence:(data.confidence?parseInt(data.confidence,10):null);
+  var reasons=(data.reasoning||[]).map(function(r,i){return '<li><b>'+String(i+1).padStart(2,"0")+'</b><span>'+esc(r)+'</span></li>';}).join("");
+  var sources=(data.sources||[]).map(function(s){return '<a class="srcitem" href="'+esc(s.uri||s.url||"#")+'" target="_blank" rel="noopener"><span class="t">'+esc(s.title||s.uri||"source")+'</span><span class="u">'+esc(s.uri||s.url||"")+'</span></a>';}).join("");
+  RI.innerHTML=
+    (isDemo?'<div class="notice">Sample verdict (illustrative). On the deployed site this comes from a live web search.</div>':'')+
+    '<div class="rwrap"><div class="verdictcard"><div class="stamp sm '+stampClass(v)+'">'+esc(v)+(conf!=null?'<small>Confidence '+conf+'%</small>':'')+'</div></div>'+
+    '<div class="rbody"><h2>The verdict</h2>'+
+    (data.summary?'<p class="summary">'+esc(data.summary)+'</p>':'')+
+    (reasons?'<ul class="reasons">'+reasons+'</ul>':'')+
+    (sources?'<div class="sources"><h3>Sources</h3>'+sources+'</div>':'<div class="sources"><h3>Sources</h3><p class="mono" style="font-size:12px;color:var(--muted)">No web sources were returned for this check.</p></div>')+
+    '<div class="disc">VerifyAI uses an AI model with live web search. It can be wrong, miss context, or surface low-quality sources — always read the sources yourself before deciding. Not a substitute for professional fact-checking.</div>'+
+    '</div></div>';
+  R.scrollIntoView({behavior:"smooth"});
+}
+var DEMO={verdict:"MISLEADING",confidence:82,summary:"The underlying photo is real but is being shared out of context — it is several years old and was taken in a different location than the caption claims.",reasoning:["Reverse-image results date the photo to at least 2019, predating the event in the caption.","The caption's named location does not match landmarks visible in the image.","No credible news outlet has reported the event described alongside this image.","The claim relies on urgency ('last night') that the evidence does not support."],sources:[{title:"Reuters Fact Check — recycled flood images",uri:"https://www.reuters.com/fact-check/"},{title:"AFP Fact Check — image provenance",uri:"https://factcheck.afp.com/"}]};
+</script>
+</body></html>

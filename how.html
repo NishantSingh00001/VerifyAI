@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How it works — VerifyAI</title>
+<meta name="description" content="How VerifyAI checks a claim: live web search, source weighing, and a plain verdict.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+
+<div class="topline"><div class="wrap in"><span>VERIFYAI · INDEPENDENT VERIFICATION</span><span id="dateline">—</span></div></div>
+<header class="masthead"><div class="wrap in"><a href="index.html"><div class="brand">Verify<b>AI</b></div></a><div class="tagline">A verdict with the evidence — before you share it.</div></div></header>
+<nav class="main"><div class="wrap in">
+  <a href="index.html">Home</a><a href="verify.html">Verify</a><a href="how.html" class="active">How it works</a><a href="about.html">About</a>
+  <span class="spacer"></span><a href="verify.html" class="go">Check a claim →</a>
+</div></nav>
+
+<section class="page"><div class="wrap">
+  <div class="sec-kicker">The method</div>
+  <h1>How a verdict is reached</h1>
+  <p class="dek">VerifyAI doesn't ask you to trust it. Every verdict is built from live web sources you can open and read yourself.</p>
+
+  <ol class="steps">
+    <li><b>You submit a claim</b>A statement you've seen online, or an image. Text is sent to the verification service; images are read for hidden metadata right in your browser and never uploaded.</li>
+    <li><b>It searches the live web</b>An AI model with Google Search grounding composes several queries, reads what it finds, and looks specifically for primary sources and existing fact-checks.</li>
+    <li><b>It weighs the evidence</b>The model decides whether the claim is supported, misleading, false, or simply unverifiable — and how confident that judgement is.</li>
+    <li><b>It returns a verdict with sources</b>You get a plain label, a confidence figure, the reasoning, and a list of the sources it relied on. If it can't find enough, it says so rather than guessing.</li>
+  </ol>
+
+  <h2>Checking an image</h2>
+  <p>For images, VerifyAI reads the file's <b>EXIF metadata</b> in your browser — the capture date, camera, editing software, and GPS location if present. Recycled or AI-generated images often show editing software, mismatched dates, or no camera data at all. It also gives you one-tap <b>reverse-image search</b> links (Google Lens, TinEye, Bing) so you can find where a photo first appeared.</p>
+
+  <div class="callout"><b>Important</b><p style="margin:6px 0 0">Stripped metadata is normal — most social platforms remove EXIF on upload. Missing metadata is not proof of anything on its own; it's one signal among several.</p></div>
+
+  <h2>What the labels mean</h2>
+  <ul>
+    <li><b>True</b> — the claim matches the primary evidence located.</li>
+    <li><b>Misleading</b> — partly true but framed to mislead: wrong context, outdated, cropped, or cherry-picked.</li>
+    <li><b>False</b> — contradicted by the evidence, or no credible source exists.</li>
+    <li><b>Unverified</b> — no adequate source could be located. VerifyAI will not invent a verdict.</li>
+  </ul>
+
+  <h2>Privacy</h2>
+  <p>Image metadata is read locally and the image itself is never sent anywhere. Only the text of a claim is sent to the verification service to run the web search. There are no accounts and no tracking.</p>
+
+  <p style="margin-top:28px"><a href="verify.html" class="btn btn-fill">Try the verifier →</a></p>
+</div></section>
+
+<footer><div class="wrap foot-in"><span>VERIFYAI · Edition 001</span><span><a href="how.html">Method</a> · <a href="about.html">About &amp; limits</a></span><span>Not a substitute for professional fact-checking.</span></div></footer>
+<script>(function(){var d=new Date(),days=["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"],mon=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];var el=document.getElementById('dateline');if(el)el.textContent=days[d.getDay()]+", "+d.getDate()+" "+mon[d.getMonth()]+" "+d.getFullYear();})();</script>
+</body></html>

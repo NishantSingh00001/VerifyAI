@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About — VerifyAI</title>
+<meta name="description" content="What VerifyAI is, what it can and can't do, and its limits.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head><body>
+
+<div class="topline"><div class="wrap in"><span>VERIFYAI · INDEPENDENT VERIFICATION</span><span id="dateline">—</span></div></div>
+<header class="masthead"><div class="wrap in"><a href="index.html"><div class="brand">Verify<b>AI</b></div></a><div class="tagline">A verdict with the evidence — before you share it.</div></div></header>
+<nav class="main"><div class="wrap in">
+  <a href="index.html">Home</a><a href="verify.html">Verify</a><a href="how.html">How it works</a><a href="about.html" class="active">About</a>
+  <span class="spacer"></span><a href="verify.html" class="go">Check a claim →</a>
+</div></nav>
+
+<section class="page"><div class="wrap">
+  <div class="sec-kicker">About</div>
+  <h1>An honest verification tool</h1>
+  <p class="dek">VerifyAI is a free, no-account tool that helps you check a claim or image against the live web before you share it — and shows its working.</p>
+
+  <h2>What it does well</h2>
+  <ul>
+    <li>Checks factual, checkable claims against current web sources.</li>
+    <li>Surfaces primary sources and existing fact-checks you can read yourself.</li>
+    <li>Reads an image's hidden metadata to spot recycled or edited photos.</li>
+    <li>Gives a plain verdict with a confidence figure — and admits when it can't tell.</li>
+  </ul>
+
+  <h2>What it can't do — and its limits</h2>
+  <div class="callout"><b>Read this before you rely on a verdict</b>
+    <p style="margin:6px 0 0">VerifyAI uses an AI model with web search. That means it can be confidently wrong, miss context, or lean on a weak source. It is a <b>starting point</b>, not a final authority.</p>
+  </div>
+  <ul>
+    <li><b>Opinions and predictions can't be fact-checked</b> — only verifiable claims about the world.</li>
+    <li><b>Breaking news is hard</b> — sources may not exist yet; expect "Unverified".</li>
+    <li><b>It can't confirm an image is AI-generated</b> — metadata is a hint, not proof. Use the reverse-image links too.</li>
+    <li><b>Source quality varies</b> — always open the sources and judge them yourself.</li>
+    <li>It is <b>not a substitute for professional fact-checkers</b> or primary reporting.</li>
+  </ul>
+
+  <h2>How it's built</h2>
+  <p>A static multi-page site with one small serverless function that calls Google's Gemini model with live Google Search. Image metadata is parsed in your browser. There is no database, no account system, and nothing you check is stored.</p>
+
+  <h2>Credits</h2>
+  <p class="mono" style="font-size:13px">Verdicts: Google Gemini + Google Search grounding · Image metadata: exifr · Reverse search: Google Lens, TinEye, Bing.</p>
+
+  <p style="margin-top:28px"><a href="verify.html" class="btn btn-fill">Go to the verifier →</a></p>
+</div></section>
+
+<footer><div class="wrap foot-in"><span>VERIFYAI · Edition 001</span><span><a href="how.html">Method</a> · <a href="about.html">About &amp; limits</a></span><span>Not a substitute for professional fact-checking.</span></div></footer>
+<script>(function(){var d=new Date(),days=["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"],mon=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];var el=document.getElementById('dateline');if(el)el.textContent=days[d.getDay()]+", "+d.getDate()+" "+mon[d.getMonth()]+" "+d.getFullYear();})();</script>
+</body></html>
